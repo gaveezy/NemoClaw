@@ -147,6 +147,8 @@ It verifies that Docker is reachable, warns on untested runtimes such as Podman,
 The preflight also enforces the OpenShell version range declared in the blueprint (`min_openshell_version` and `max_openshell_version`).
 If the installed OpenShell version falls outside this range, onboarding exits with an actionable error and a link to compatible releases.
 
+### `nemoclaw onboard --from`
+
 #### `--from <Dockerfile>`
 
 Build the sandbox image from a custom Dockerfile instead of the stock NemoClaw image.
@@ -510,7 +512,7 @@ $ nemoclaw onboard
 These overrides apply to onboarding, status checks, health probes, and the uninstaller.
 Defaults are unchanged when no variable is set.
 
-### Legacy `nemoclaw setup`
+### `nemoclaw setup`
 
 Deprecated. Use `nemoclaw onboard` instead.
 Running `nemoclaw setup` now delegates directly to `nemoclaw onboard`.

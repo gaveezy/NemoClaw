@@ -147,7 +147,7 @@ It verifies that Docker is reachable, warns on untested runtimes such as Podman,
 The preflight also enforces the OpenShell version range declared in the blueprint (`min_openshell_version` and `max_openshell_version`).
 If the installed OpenShell version falls outside this range, onboarding exits with an actionable error and a link to compatible releases.
 
-#### `--from <Dockerfile>`
+### `nemoclaw onboard --from`
 
 Build the sandbox image from a custom Dockerfile instead of the stock NemoClaw image.
 The entire parent directory of the specified file is used as the Docker build context, so any files your Dockerfile references (scripts, config, etc.) must live alongside it.
@@ -188,6 +188,19 @@ This command remains as a compatibility wrapper for the older Brev-specific boot
 
 ```console
 $ nemoclaw deploy <instance-name>
+```
+
+### `nemoclaw setup`
+
+:::{warning}
+The `nemoclaw setup` command is deprecated.
+Use `nemoclaw onboard` instead.
+:::
+
+Deprecated alias for `nemoclaw onboard`.
+
+```console
+$ nemoclaw setup
 ```
 
 ### `nemoclaw <name> connect`
@@ -285,7 +298,7 @@ $ nemoclaw my-assistant policy-remove
 
 Unchecking a preset in the onboard TUI checkbox also removes it from the sandbox.
 
-### `nemoclaw <name> skill install <path>`
+### `nemoclaw <name> skill install`
 
 Deploy a skill directory to a running sandbox.
 The command validates the `SKILL.md` frontmatter (a `name` field is required), uploads all non-dot files preserving subdirectory structure, and performs agent-specific post-install steps.
@@ -368,7 +381,7 @@ List available snapshots for a sandbox with timestamps and item counts.
 $ nemoclaw my-assistant snapshot list
 ```
 
-### `nemoclaw <name> snapshot restore [timestamp]`
+### `nemoclaw <name> snapshot restore`
 
 Restore sandbox state from a snapshot.
 The sandbox must be running before you restore.
@@ -456,7 +469,7 @@ Values are not printed.
 $ nemoclaw credentials list
 ```
 
-### `nemoclaw credentials reset <KEY>`
+### `nemoclaw credentials reset`
 
 Remove a stored credential by name.
 After removal, re-running `nemoclaw onboard` re-prompts for that key.

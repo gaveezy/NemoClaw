@@ -2822,7 +2822,7 @@ function help() {
 
   ${G}Getting Started:${R}
     ${B}nemoclaw onboard${R}                 Configure inference endpoint and credentials
-    nemoclaw onboard ${D}--from <Dockerfile>${R}  Use a custom Dockerfile for the sandbox image
+      ${D}--from <Dockerfile>${R}            Use a custom Dockerfile for the sandbox image
                                     ${D}(non-interactive: ${NOTICE_ACCEPT_FLAG} or ${NOTICE_ACCEPT_ENV}=1)${R}
 
   ${G}Sandbox Management:${R}
@@ -2841,13 +2841,13 @@ function help() {
 
   ${G}Policy Presets:${R}
     nemoclaw <name> policy-add [preset]    Add a network or filesystem policy preset ${D}(--yes, --dry-run)${R}
-    nemoclaw <name> policy-remove [preset] Remove an applied policy preset ${D}(--yes, --dry-run)${R}
+    nemoclaw <name> policy-remove [preset]  Remove an applied policy preset ${D}(--yes, --dry-run)${R}
     nemoclaw <name> policy-list      List presets ${D}(● = applied)${R}
 
   ${G}Messaging Channels:${R}
     nemoclaw <name> channels list            List supported messaging channels
     nemoclaw <name> channels add <channel>   Save credentials and rebuild ${D}(telegram|discord|slack)${R}
-    nemoclaw <name> channels remove <channel> Clear credentials and rebuild
+    nemoclaw <name> channels remove <channel>  Clear credentials and rebuild
 
   ${G}Compatibility Commands:${R}
     nemoclaw setup                   Deprecated alias for ${B}nemoclaw onboard${R}
@@ -2866,7 +2866,7 @@ function help() {
 
   ${G}Credentials:${R}
     nemoclaw credentials list        List stored credential keys
-    nemoclaw credentials reset <KEY> Remove a stored credential so onboard re-prompts
+    nemoclaw credentials reset <KEY>  Remove a stored credential so onboard re-prompts
 
   ${G}Backup:${R}
     nemoclaw backup-all              Back up all sandbox state before upgrade

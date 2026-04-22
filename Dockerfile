@@ -398,17 +398,6 @@ RUN chown root:root /sandbox/.nemoclaw \
     && touch /sandbox/.nemoclaw/config.json \
     && chown sandbox:sandbox /sandbox/.nemoclaw/config.json
 
-# DAC-protect /sandbox home directory: under Landlock best_effort, kernels
-# without Landlock support fall back to DAC-only enforcement. Root ownership
-# with sticky bit prevents the sandbox user from creating new files directly
-# in the home directory while still allowing access to writable subdirectories
-# (.openclaw-data, .nemoclaw/state, /tmp). The sticky bit survives any chown
-# by OpenShell's prepare_filesystem() and prevents sandbox from renaming or
-# deleting root-owned entries.
-# Ref: https://github.com/NVIDIA/NemoClaw/issues/804
-RUN chown root:root /sandbox \
-    && chmod 1755 /sandbox
-
 # Entrypoint runs as root to start the gateway as the gateway user,
 # then drops to sandbox for agent commands. See nemoclaw-start.sh.
 ENTRYPOINT ["/usr/local/bin/nemoclaw-start"]

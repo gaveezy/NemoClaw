@@ -156,7 +156,6 @@ run_cli_check() {
       while ($c =~ s/\s+<[^>]+>\s*$//) {}
       my $k = "nemoclaw $c";
       $k =~ s/^nemoclaw debug.*/nemoclaw debug/;
-      $k =~ s/^(nemoclaw onboard) --from.*/$1/;
       print "$k\n";
     }
   ' | LC_ALL=C sort -u >"$_tmp/help.txt"
@@ -169,13 +168,8 @@ run_cli_check() {
   # log text: backticks are documentation markers, not command substitution
   log '[cli] phase 2/2: extract ### `nemoclaw …` headings from commands reference'
   # Allow optional MyST suffix on the same line, e.g. ### `nemoclaw onboard` {#anchor}
-  grep -E '^### (Legacy )?\`nemoclaw ' "$COMMANDS_MD" | LC_ALL=C perl -CS -ne '
-    if (/^### (?:Legacy )?\`([^\`]+)\`/) {
-      my $c = $1;
-      $c =~ s/\s*\[[^\]]*\]\s*$//;
-      while ($c =~ s/\s+<[^>]+>\s*$//) {}
-      print "$c\n";
-    }
+  grep -E '^### `nemoclaw ' "$COMMANDS_MD" | LC_ALL=C perl -CS -ne '
+    if (/^### `([^`]+)`\s*(?:\{[^}]+\})?\s*$/) { print "$1\n"; }
   ' | LC_ALL=C sort -u >"$_tmp/doc.txt"
 
   local _n_doc

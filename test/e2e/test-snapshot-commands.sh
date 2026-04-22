@@ -101,7 +101,7 @@ pass "Marker file written"
 # ── Phase 3: snapshot create ────────────────────────────────────────
 info "Phase 3: Creating snapshot..."
 
-SNAPSHOT_OUTPUT=$(nemoclaw "${SANDBOX_NAME}" snapshot create 2>&1)
+SNAPSHOT_OUTPUT=$(nemoclaw "${SANDBOX_NAME}" snapshot create 2>&1) || true
 echo "$SNAPSHOT_OUTPUT"
 
 if echo "$SNAPSHOT_OUTPUT" | grep -q "Snapshot created"; then
@@ -117,7 +117,7 @@ info "Snapshot path: ${SNAPSHOT_PATH:-unknown}"
 # ── Phase 4: snapshot list ──────────────────────────────────────────
 info "Phase 4: Listing snapshots..."
 
-LIST_OUTPUT=$(nemoclaw "${SANDBOX_NAME}" snapshot list 2>&1)
+LIST_OUTPUT=$(nemoclaw "${SANDBOX_NAME}" snapshot list 2>&1) || true
 echo "$LIST_OUTPUT"
 
 if echo "$LIST_OUTPUT" | grep -q "snapshot(s)"; then
@@ -153,7 +153,7 @@ openshell sandbox exec --name "${SANDBOX_NAME}" -- \
 # ── Phase 6: snapshot restore (latest) ──────────────────────────────
 info "Phase 6: Restoring latest snapshot..."
 
-RESTORE_OUTPUT=$(nemoclaw "${SANDBOX_NAME}" snapshot restore 2>&1)
+RESTORE_OUTPUT=$(nemoclaw "${SANDBOX_NAME}" snapshot restore 2>&1) || true
 echo "$RESTORE_OUTPUT"
 
 if ! echo "$RESTORE_OUTPUT" | grep -q "Restored"; then
@@ -167,7 +167,7 @@ pass "Latest snapshot restored expected state"
 # ── Phase 7: snapshot restore with timestamp (first snapshot) ───────
 info "Phase 7: Restoring first snapshot by timestamp..."
 
-TARGETED_OUTPUT=$(nemoclaw "${SANDBOX_NAME}" snapshot restore "${SNAPSHOT_TIMESTAMP}" 2>&1)
+TARGETED_OUTPUT=$(nemoclaw "${SANDBOX_NAME}" snapshot restore "${SNAPSHOT_TIMESTAMP}" 2>&1) || true
 echo "$TARGETED_OUTPUT"
 
 if ! echo "$TARGETED_OUTPUT" | grep -q "Restored"; then

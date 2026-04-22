@@ -141,7 +141,7 @@ run_cli_check() {
   # shellcheck disable=SC2016
   # log text: backticks are documentation markers, not command substitution
   log '[cli]        vs: docs/reference/commands.md (### `nemoclaw …` headings only)'
-  log "[cli] excluded: openshell, /nemoclaw slash, deprecated nemoclaw setup (not in --help)"
+  log "[cli] excluded: openshell, /nemoclaw slash, deprecated nemoclaw setup/setup-spark, nemoclaw onboard variants"
 
   log "[cli] phase 1/2: extract normalized usage lines from --help"
   NO_COLOR=1 "$NODE" "$CLI_JS" --help 2>&1 | LC_ALL=C perl -CS -ne '
@@ -156,6 +156,8 @@ run_cli_check() {
       while ($c =~ s/\s+<[^>]+>\s*$//) {}
       my $k = "nemoclaw $c";
       $k =~ s/^nemoclaw debug.*/nemoclaw debug/;
+      $k =~ s/^nemoclaw onboard.*/nemoclaw onboard/;
+      next if $k =~ /^nemoclaw setup(?:-spark)?$/;
       print "$k\n";
     }
   ' | LC_ALL=C sort -u >"$_tmp/help.txt"
@@ -169,7 +171,13 @@ run_cli_check() {
   log '[cli] phase 2/2: extract ### `nemoclaw …` headings from commands reference'
   # Allow optional MyST suffix on the same line, e.g. ### `nemoclaw onboard` {#anchor}
   grep -E '^### `nemoclaw ' "$COMMANDS_MD" | LC_ALL=C perl -CS -ne '
-    if (/^### `([^`]+)`\s*(?:\{[^}]+\})?\s*$/) { print "$1\n"; }
+    if (/^### `([^`]+)`\s*(?:\{[^}]+\})?\s*$/) {
+      my $c = $1;
+      $c =~ s/\s*\[[^\]]*\]\s*$//;
+      while ($c =~ s/\s+<[^>]+>\s*$//) {}
+      next if $c =~ /^nemoclaw setup(?:-spark)?$/;
+      print "$c\n";
+    }
   ' | LC_ALL=C sort -u >"$_tmp/doc.txt"
 
   local _n_doc

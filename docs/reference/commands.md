@@ -153,7 +153,7 @@ It verifies that Docker is reachable, warns on untested runtimes such as Podman,
 The preflight also enforces the OpenShell version range declared in the blueprint (`min_openshell_version` and `max_openshell_version`).
 If the installed OpenShell version falls outside this range, onboarding exits with an actionable error and a link to compatible releases.
 
-#### `--from <Dockerfile>`
+### `nemoclaw onboard --from`
 
 Build the sandbox image from a custom Dockerfile instead of the stock NemoClaw image.
 The entire parent directory of the specified file is used as the Docker build context, so any files your Dockerfile references (scripts, config, etc.) must live alongside it.
@@ -571,6 +571,14 @@ $ nemoclaw tunnel start
 
 `nemoclaw start` remains as a deprecated alias that prints a warning and delegates to `tunnel start`.
 
+### `nemoclaw start`
+
+Deprecated alias for `nemoclaw tunnel start`. Prints a warning and delegates.
+
+```console
+$ nemoclaw start
+```
+
 ### `nemoclaw tunnel stop`
 
 Stop host auxiliary services started by `nemoclaw tunnel start` (for example cloudflared). This does not affect messaging channels running inside the sandbox; use `nemoclaw <name> channels stop <channel>` to pause a specific bridge without destroying the sandbox.
@@ -581,12 +589,33 @@ $ nemoclaw tunnel stop
 
 `nemoclaw stop` remains as a deprecated alias that prints a warning and delegates to `tunnel stop`.
 
+### `nemoclaw stop`
+
+Deprecated alias for `nemoclaw tunnel stop`. Prints a warning and delegates.
+
+```console
+$ nemoclaw stop
+```
+
 ### `nemoclaw status`
 
 Show the sandbox list and the status of host auxiliary services (for example cloudflared).
 
 ```console
 $ nemoclaw status
+```
+
+### `nemoclaw setup`
+
+:::{warning}
+The `nemoclaw setup` command is deprecated.
+Use `nemoclaw onboard` instead.
+:::
+
+Compatibility alias for `nemoclaw onboard`.
+
+```console
+$ nemoclaw setup
 ```
 
 ### `nemoclaw setup-spark`

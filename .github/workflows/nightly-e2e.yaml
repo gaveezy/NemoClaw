@@ -48,9 +48,11 @@ concurrency:
 
 jobs:
   cloud-e2e:
-    if: github.repository == 'NVIDIA/NemoClaw'
-    runs-on: ubuntu-latest
+    if: github.repository == 'gaveezy/NemoClaw'
+    runs-on: [self-hosted, colossus]
     timeout-minutes: 45
+    env:
+      TMPDIR: /localhome/local-haingu/tmp
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -74,10 +76,12 @@ jobs:
           if-no-files-found: ignore
 
   cloud-experimental-e2e:
-    if: github.repository == 'NVIDIA/NemoClaw'
-    runs-on: ubuntu-latest
+    if: github.repository == 'gaveezy/NemoClaw'
+    runs-on: [self-hosted, colossus]
     # Main suite + check-docs + network-policy skip script can exceed 45m on cold runners.
     timeout-minutes: 90
+    env:
+      TMPDIR: /localhome/local-haingu/tmp
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -177,9 +181,11 @@ jobs:
   # proxy rewrites placeholders and the real API returns 401, proving the
   # chain works. See: PR #1081
   messaging-providers-e2e:
-    if: github.repository == 'NVIDIA/NemoClaw'
-    runs-on: ubuntu-latest
+    if: github.repository == 'gaveezy/NemoClaw'
+    runs-on: [self-hosted, colossus]
     timeout-minutes: 45
+    env:
+      TMPDIR: /localhome/local-haingu/tmp
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -211,9 +217,11 @@ jobs:
   # to prove the sandbox is rebuilt on rotation and reused when unchanged.
   # See: issue #1903
   token-rotation-e2e:
-    if: github.repository == 'NVIDIA/NemoClaw'
-    runs-on: ubuntu-latest
+    if: github.repository == 'gaveezy/NemoClaw'
+    runs-on: [self-hosted, colossus]
     timeout-minutes: 45
+    env:
+      TMPDIR: /localhome/local-haingu/tmp
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -239,9 +247,11 @@ jobs:
 
   # ── Sandbox survival (gateway restart recovery) ──────────────
   sandbox-survival-e2e:
-    if: github.repository == 'NVIDIA/NemoClaw'
-    runs-on: ubuntu-latest
+    if: github.repository == 'gaveezy/NemoClaw'
+    runs-on: [self-hosted, colossus]
     timeout-minutes: 30
+    env:
+      TMPDIR: /localhome/local-haingu/tmp
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -269,9 +279,11 @@ jobs:
   # verifying the Hermes health probe, and running live inference through the
   # Hermes sandbox. See: PR #1618
   hermes-e2e:
-    if: github.repository == 'NVIDIA/NemoClaw'
-    runs-on: ubuntu-latest
+    if: github.repository == 'gaveezy/NemoClaw'
+    runs-on: [self-hosted, colossus]
     timeout-minutes: 60
+    env:
+      TMPDIR: /localhome/local-haingu/tmp
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -301,9 +313,11 @@ jobs:
   # Reproduces the exact scenario from the bug report: onboard, verify
   # policy is Active, curl from inside sandbox must not return 403.
   skip-permissions-e2e:
-    if: github.repository == 'NVIDIA/NemoClaw'
-    runs-on: ubuntu-latest
+    if: github.repository == 'gaveezy/NemoClaw'
+    runs-on: [self-hosted, colossus]
     timeout-minutes: 30
+    env:
+      TMPDIR: /localhome/local-haingu/tmp
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -332,9 +346,11 @@ jobs:
   # auto-recovery after docker kill, registry rebuild, process recovery,
   # multi-sandbox metadata, and cross-sandbox network isolation.
   sandbox-operations-e2e:
-    if: github.repository == 'NVIDIA/NemoClaw'
-    runs-on: ubuntu-latest
+    if: github.repository == 'gaveezy/NemoClaw'
+    runs-on: [self-hosted, colossus]
     timeout-minutes: 60
+    env:
+      TMPDIR: /localhome/local-haingu/tmp
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -361,9 +377,11 @@ jobs:
   # TC-INF-06: invalid API key → classified credential error (PR-safe)
   # TC-INF-07: unreachable endpoint → classified transport error (PR-safe)
   inference-routing-e2e:
-    if: github.repository == 'NVIDIA/NemoClaw'
-    runs-on: ubuntu-latest
+    if: github.repository == 'gaveezy/NemoClaw'
+    runs-on: [self-hosted, colossus]
     timeout-minutes: 30
+    env:
+      TMPDIR: /localhome/local-haingu/tmp
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -388,9 +406,11 @@ jobs:
   # TC-NET-01..07, TC-NET-09: deny-by-default, whitelist, live policy-add,
   # dry-run, hot-reload, inference exemption, permissive mode, SSRF validation.
   network-policy-e2e:
-    if: github.repository == 'NVIDIA/NemoClaw'
-    runs-on: ubuntu-latest
+    if: github.repository == 'gaveezy/NemoClaw'
+    runs-on: [self-hosted, colossus]
     timeout-minutes: 45
+    env:
+      TMPDIR: /localhome/local-haingu/tmp
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -415,9 +435,11 @@ jobs:
   # TC-DEPLOY-01: nemoclaw start/stop (cloudflared tunnel)
   # TC-DEPLOY-03: uninstall --keep-openshell (destructive, runs last in script)
   deployment-services-e2e:
-    if: github.repository == 'NVIDIA/NemoClaw'
-    runs-on: ubuntu-latest
+    if: github.repository == 'gaveezy/NemoClaw'
+    runs-on: [self-hosted, colossus]
     timeout-minutes: 60
+    env:
+      TMPDIR: /localhome/local-haingu/tmp
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -441,9 +463,11 @@ jobs:
   # Validates snapshot create/list/restore lifecycle: create a snapshot,
   # list it, delete state, restore from snapshot, verify state recovered.
   snapshot-commands-e2e:
-    if: github.repository == 'NVIDIA/NemoClaw'
-    runs-on: ubuntu-latest
+    if: github.repository == 'gaveezy/NemoClaw'
+    runs-on: [self-hosted, colossus]
     timeout-minutes: 30
+    env:
+      TMPDIR: /localhome/local-haingu/tmp
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -470,9 +494,11 @@ jobs:
   # Validates shields down/up controls config mutability, config get/set/
   # rotate-token, audit trail, and auto-restore timer.
   shields-config-e2e:
-    if: github.repository == 'NVIDIA/NemoClaw'
-    runs-on: ubuntu-latest
+    if: github.repository == 'gaveezy/NemoClaw'
+    runs-on: [self-hosted, colossus]
     timeout-minutes: 30
+    env:
+      TMPDIR: /localhome/local-haingu/tmp
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -499,9 +525,11 @@ jobs:
   # Reproduces NVBug 6076156: onboard with an older OpenClaw version,
   # then rebuild to verify workspace state survives the upgrade.
   rebuild-openclaw-e2e:
-    if: github.repository == 'NVIDIA/NemoClaw'
-    runs-on: ubuntu-latest
+    if: github.repository == 'gaveezy/NemoClaw'
+    runs-on: [self-hosted, colossus]
     timeout-minutes: 60
+    env:
+      TMPDIR: /localhome/local-haingu/tmp
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -529,9 +557,11 @@ jobs:
   # NemoClaw, create a sandbox, upgrade to current, verify the old
   # sandbox is detected as stale and rebuilt with the new image.
   upgrade-stale-sandbox-e2e:
-    if: github.repository == 'NVIDIA/NemoClaw'
-    runs-on: ubuntu-latest
+    if: github.repository == 'gaveezy/NemoClaw'
+    runs-on: [self-hosted, colossus]
     timeout-minutes: 60
+    env:
+      TMPDIR: /localhome/local-haingu/tmp
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -559,9 +589,11 @@ jobs:
   # ── Hermes rebuild upgrade E2E ──────────────────────────────
   # Same upgrade scenario as OpenClaw but for Hermes Agent.
   rebuild-hermes-e2e:
-    if: github.repository == 'NVIDIA/NemoClaw'
-    runs-on: ubuntu-latest
+    if: github.repository == 'gaveezy/NemoClaw'
+    runs-on: [self-hosted, colossus]
     timeout-minutes: 60
+    env:
+      TMPDIR: /localhome/local-haingu/tmp
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -592,10 +624,11 @@ jobs:
   # Runner labels: using 'self-hosted' for now. Refine to
   # [self-hosted, linux, x64, gpu] once NVIDIA runner labels are confirmed.
   gpu-e2e:
-    if: github.repository == 'NVIDIA/NemoClaw' && vars.GPU_E2E_ENABLED == 'true'
-    runs-on: self-hosted
+    if: github.repository == 'gaveezy/NemoClaw' && vars.GPU_E2E_ENABLED == 'true'
+    runs-on: [self-hosted, colossus]
     timeout-minutes: 60
     env:
+      TMPDIR: /localhome/local-haingu/tmp
       NEMOCLAW_NON_INTERACTIVE: "1"
       NEMOCLAW_ACCEPT_THIRD_PARTY_SOFTWARE: "1"
       NEMOCLAW_SANDBOX_NAME: "e2e-gpu-ollama"
@@ -636,7 +669,7 @@ jobs:
           if-no-files-found: ignore
 
   notify-on-failure:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, colossus]
     needs: [cloud-e2e, cloud-experimental-e2e, messaging-providers-e2e, token-rotation-e2e, sandbox-survival-e2e, hermes-e2e, skip-permissions-e2e, sandbox-operations-e2e, inference-routing-e2e, network-policy-e2e, deployment-services-e2e, snapshot-commands-e2e, shields-config-e2e, rebuild-openclaw-e2e, upgrade-stale-sandbox-e2e, rebuild-hermes-e2e, gpu-e2e]
     if: ${{ always() && (needs.cloud-e2e.result == 'failure' || needs.cloud-experimental-e2e.result == 'failure' || needs.messaging-providers-e2e.result == 'failure' || needs.token-rotation-e2e.result == 'failure' || needs.sandbox-survival-e2e.result == 'failure' || needs.hermes-e2e.result == 'failure' || needs.skip-permissions-e2e.result == 'failure' || needs.sandbox-operations-e2e.result == 'failure' || needs.inference-routing-e2e.result == 'failure' || needs.network-policy-e2e.result == 'failure' || needs.deployment-services-e2e.result == 'failure' || needs.snapshot-commands-e2e.result == 'failure' || needs.shields-config-e2e.result == 'failure' || needs.rebuild-openclaw-e2e.result == 'failure' || needs.upgrade-stale-sandbox-e2e.result == 'failure' || needs.rebuild-hermes-e2e.result == 'failure' || needs.gpu-e2e.result == 'failure') }}
     permissions:

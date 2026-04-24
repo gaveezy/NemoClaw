@@ -31,12 +31,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # ── Messaging Providers E2E ──────────────────────────────────
-  # Validates the full provider/placeholder/L7-proxy chain for messaging
-  # credentials (Telegram, Discord). Uses fake tokens by default — the L7
-  # proxy rewrites placeholders and the real API returns 401, proving the
-  # chain works. See: PR #1081
-  messaging-providers-e2e:
+  cloud-e2e:
     if: github.repository == 'gaveezy/NemoClaw'
     runs-on: [ubuntu-latest]
     timeout-minutes: 45
@@ -44,22 +39,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Run messaging providers E2E test
+      - name: Run cloud E2E test
         env:
           NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
           NEMOCLAW_NON_INTERACTIVE: "1"
           NEMOCLAW_ACCEPT_THIRD_PARTY_SOFTWARE: "1"
-          NEMOCLAW_POLICY_TIER: "open"
-          NEMOCLAW_SANDBOX_NAME: "e2e-msg-provider"
+          NEMOCLAW_SANDBOX_NAME: "e2e-nightly"
+          NEMOCLAW_RECREATE_SANDBOX: "1"
           GITHUB_TOKEN: ${{ github.token }}
-          TELEGRAM_BOT_TOKEN: "test-fake-telegram-token-e2e"
-          DISCORD_BOT_TOKEN: "test-fake-discord-token-e2e"
-        run: bash test/e2e/test-messaging-providers.sh
+        run: bash test/e2e/test-full-e2e.sh
 
       - name: Upload install log on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: install-log-messaging-providers
+          name: install-log
           path: /tmp/nemoclaw-e2e-install.log
           if-no-files-found: ignore

@@ -17,6 +17,8 @@
 name: single-e2e
 
 on:
+  push:
+    branches: [ci/nightly-e2e-self-hosted]
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:

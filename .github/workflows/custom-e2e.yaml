@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+name: custom-e2e
+
+on:
+  push:
+    branches: [fix/nightly-e2e-timeout-no-kill-after-a8dfa27-custom-e2e]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: custom-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sandbox-operations-e2e:
+    if: github.repository == 'gaveezy/NemoClaw'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Run sandbox operations E2E test
+        env:
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+          NEMOCLAW_NON_INTERACTIVE: "1"
+          NEMOCLAW_ACCEPT_THIRD_PARTY_SOFTWARE: "1"
+          NEMOCLAW_POLICY_TIER: "open"
+          GITHUB_TOKEN: ${{ github.token }}
+          NEMOCLAW_E2E_TIMEOUT_SECONDS: "2700"
+        run: bash test/e2e/test-sandbox-operations.sh
+
+      - name: Upload install log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: install-log
+          path: /tmp/nemoclaw-e2e-install.log
+          if-no-files-found: ignore

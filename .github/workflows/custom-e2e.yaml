@@ -14,7 +14,7 @@
 #   - Environment secret: only available if the job sets `environment: <that environment name>`.
 # Only runs on schedule and manual dispatch — never on PRs (secret protection).
 
-name: single-e2e
+name: custom-e2e
 
 on:
   push:

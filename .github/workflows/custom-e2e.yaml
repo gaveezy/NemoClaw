@@ -1,0 +1,84 @@
+# SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+# Validation workflow for fix/nightly-e2e-sandbox-ops-timeout-a8dfa27
+# Re-runs only the sandbox-operations-e2e job to verify the fix.
+
+name: "Custom E2E: sandbox-ops-timeout"
+
+on:
+  push:
+    branches:
+      - fix/nightly-e2e-sandbox-ops-timeout-a8dfa27-custom-e2e
+
+concurrency:
+  group: custom-e2e-sandbox-ops-timeout-${{ github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  sandbox-operations-e2e:
+    if: github.repository == 'gaveezy/NemoClaw'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Start gateway log streamer (background)
+        run: |
+          mkdir -p docker-logs
+          nohup bash -c '
+            export PATH="$HOME/.local/bin:$PATH"
+            while sleep 5; do
+              if ! docker ps --format "{{.Names}}" 2>/dev/null | grep -q "^openshell-cluster-nemoclaw$"; then
+                continue
+              fi
+              docker exec openshell-cluster-nemoclaw kubectl get pods -A --no-headers >docker-logs/_pods.txt 2>&1
+              registry="$HOME/.nemoclaw/sandboxes.json"
+              [ -f "$registry" ] || continue
+              live=$(jq -r ".sandboxes // {} | keys[]?" "$registry" 2>/dev/null)
+              for name in $live; do
+                case "$name" in
+                  *[!a-z0-9_-]*|"") continue ;;
+                esac
+                pod_match=$(awk -v n="$name" "\$1==n || \$2==n {print \$1\"/\"\$2; exit}" docker-logs/_pods.txt)
+                [ -n "$pod_match" ] || continue
+                ns="${pod_match%%/*}"
+                pod="${pod_match##*/}"
+                docker exec openshell-cluster-nemoclaw kubectl exec -n "$ns" "$pod" -c agent -- bash -c "
+                  for f in /tmp/gateway.log /tmp/gateway-persistent.log /tmp/openclaw-*/logs/*.log; do
+                    [ -f \"\$f\" ] || continue
+                    printf \"\\n----- %s (size=%s) -----\\n\" \"\$f\" \"\$(stat -c%s \"\$f\" 2>/dev/null || echo ?)\"
+                    cat -- \"\$f\" 2>/dev/null
+                  done
+                " > "docker-logs/sandbox-${name}.log" 2>&1
+              done
+            done
+          ' >/dev/null 2>&1 &
+          echo $! > /tmp/gateway-log-streamer.pid
+
+      - name: Run sandbox operations E2E test
+        env:
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+          NEMOCLAW_NON_INTERACTIVE: "1"
+          NEMOCLAW_ACCEPT_THIRD_PARTY_SOFTWARE: "1"
+          NEMOCLAW_POLICY_TIER: "open"
+          GITHUB_TOKEN: ${{ github.token }}
+          NEMOCLAW_E2E_TIMEOUT_SECONDS: "2700"
+        run: bash test/e2e/test-sandbox-operations.sh
+
+      - name: Stop gateway log streamer
+        if: always()
+        shell: bash --noprofile --norc -uo pipefail {0}
+        run: |
+          [ -f /tmp/gateway-log-streamer.pid ] && kill "$(cat /tmp/gateway-log-streamer.pid)" 2>/dev/null || true
+          pkill -f 'tail -n \+1 -F /tmp/gateway.log' 2>/dev/null || true
+          pkill -f 'ssh.*openshell-' 2>/dev/null || true
+
+      - name: Upload docker logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sandbox-ops-docker-logs
+          path: docker-logs/
+          if-no-files-found: ignore

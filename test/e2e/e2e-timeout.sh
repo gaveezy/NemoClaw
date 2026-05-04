@@ -52,11 +52,17 @@ fi
 # Runs <command> under $TIMEOUT_CMD when timeouts are enabled; runs it bare
 # when NEMOCLAW_E2E_NO_TIMEOUT=1.  Avoids the foot-gun where an empty
 # $TIMEOUT_CMD turns `$TIMEOUT_CMD 60 ssh …` into `60 ssh …`.
+#
+# --kill-after=10: if the process ignores SIGTERM (e.g. nemoclaw hangs on an
+# uninterruptible SSH child), send SIGKILL 10s later. Without this, the inner
+# timeout is ineffective and the outer overall E2E timeout must clean up,
+# stalling all subsequent test cases. Ref: NVIDIA/NemoClaw#2804-nightly.
+_TIMEOUT_KILL_AFTER=10
 run_with_timeout() {
   local seconds="$1"
   shift
   if [ "${NEMOCLAW_E2E_NO_TIMEOUT:-0}" != "1" ] && [ -n "$TIMEOUT_CMD" ]; then
-    "$TIMEOUT_CMD" "$seconds" "$@"
+    "$TIMEOUT_CMD" --kill-after="$_TIMEOUT_KILL_AFTER" "$seconds" "$@"
   else
     "$@"
   fi

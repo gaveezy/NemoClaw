@@ -598,7 +598,7 @@ test_sbx_06_gateway_recovery() {
 
   local recovered=false
   local docker_restarted=false
-  for i in $(seq 1 40); do
+  for i in $(seq 1 24); do
     sleep 15
     local cstate
     cstate=$(docker inspect -f '{{.State.Running}}' "$container" 2>/dev/null || echo "removed")
@@ -617,7 +617,7 @@ test_sbx_06_gateway_recovery() {
   done
 
   if kill -0 "$status_pid" 2>/dev/null; then
-    log "  nemoclaw status still running after 10 min — killing"
+    log "  nemoclaw status still running after 6 min — killing"
     kill "$status_pid" 2>/dev/null || true
     wait "$status_pid" 2>/dev/null || true
   fi
